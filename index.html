@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocolo Clínico VIH - Herramienta para Estudiantes de Medicina</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        medical: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            500: '#14b8a6',
+                            700: '#0f766e',
+                            900: '#134e4a',
+                        },
+                        viral: {
+                            100: '#fee2e2',
+                            500: '#ef4444',
+                            700: '#b91c1c',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .mech-card {
+            transition: all 0.3s ease;
+        }
+        .mech-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-medical-500 flex items-center justify-center text-white shadow-inner">
+                    <i class="fa-solid fa-viruses text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-gray-900 leading-tight">Protocolo Clínico VIH</h1>
+                    <p class="text-xs text-medical-700 font-medium">Herramienta Interactiva Académica</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="#" class="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors bg-gray-100 px-3 py-2 rounded-md">
+                    <i class="fa-brands fa-github text-lg"></i>
+                    <span class="hidden sm:inline">Ver Repositorio</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row gap-8">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 flex-shrink-0">
+            <nav class="flex flex-col gap-2 sticky top-24">
+                <button onclick="switchTab('diagnostico')" id="btn-diagnostico" class="tab-btn w-full flex items-center gap-3 px-4 py-3 text-left rounded-xl bg-medical-50 text-medical-700 font-semibold border border-medical-100 transition-all">
+                    <i class="fa-solid fa-microscope w-5 text-center"></i>
+                    Identificación y Diagnóstico
+                </button>
+                <button onclick="switchTab('seguimiento')" id="btn-seguimiento" class="tab-btn w-full flex items-center gap-3 px-4 py-3 text-left rounded-xl bg-white text-gray-600 hover:bg-gray-50 border border-transparent hover:border-gray-200 font-medium transition-all">
+                    <i class="fa-solid fa-chart-line w-5 text-center"></i>
+                    Seguimiento Clínico y TAR
+                </button>
+                <button onclick="switchTab('mecanismos')" id="btn-mecanismos" class="tab-btn w-full flex items-center gap-3 px-4 py-3 text-left rounded-xl bg-white text-gray-600 hover:bg-gray-50 border border-transparent hover:border-gray-200 font-medium transition-all">
+                    <i class="fa-solid fa-dna w-5 text-center"></i>
+                    Mecanismos de Restricción
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Dynamic Content Area -->
+        <section class="flex-grow bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sm:p-8 overflow-hidden">
+            
+            <!-- SECTION 1: Identificación y Diagnóstico -->
+            <div id="diagnostico" class="tab-content active">
+                <div class="mb-8 border-b border-gray-100 pb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Identificación y Diagnóstico</h2>
+                    <p class="text-gray-500">Evaluación de la fase de infección, periodo de ventana inmunológica y algoritmo de pruebas.</p>
+                </div>
+
+                <!-- Timeline -->
+                <div class="mb-10">
+                    <h3 class="text-sm uppercase tracking-wider font-semibold text-gray-400 mb-4">Línea de Tiempo de la Infección</h3>
+                    <div class="relative pt-4">
+                        <div class="absolute h-1 bg-gray-200 w-full top-6 left-0 rounded-full"></div>
+                        <div class="absolute h-1 bg-gradient-to-r from-viral-500 via-medical-500 to-blue-500 w-full top-6 left-0 rounded-full opacity-70"></div>
+                        <div class="relative flex justify-between">
+                            <div class="flex flex-col items-center group">
+                                <div class="w-5 h-5 bg-viral-500 rounded-full border-4 border-white shadow z-10"></div>
+                                <span class="text-xs font-bold mt-2 text-viral-700">Día 0</span>
+                                <span class="text-xs text-gray-500 text-center w-20">Exposición</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div class="w-5 h-5 bg-orange-400 rounded-full border-4 border-white shadow z-10"></div>
+                                <span class="text-xs font-bold mt-2 text-orange-700">10-14 Días</span>
+                                <span class="text-xs text-gray-500 text-center w-24">Viremia detectable (ARN)</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div class="w-5 h-5 bg-yellow-400 rounded-full border-4 border-white shadow z-10"></div>
+                                <span class="text-xs font-bold mt-2 text-yellow-700">22 Días (promedio)</span>
+                                <span class="text-xs text-gray-500 text-center w-24">Seroconversión (Periodo Ventana)</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div class="w-5 h-5 bg-medical-500 rounded-full border-4 border-white shadow z-10"></div>
+                                <span class="text-xs font-bold mt-2 text-medical-700">Meses/Años</span>
+                                <span class="text-xs text-gray-500 text-center w-24">Fase Asintomática Crónica</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Diagnostic Algorithm Interactive -->
+                <div class="bg-slate-50 rounded-xl p-6 border border-slate-200">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-sitemap text-medical-600"></i> Algoritmo Diagnóstico Interactivo
+                    </h3>
+                    
+                    <div id="algo-step-1" class="algo-step">
+                        <p class="text-gray-700 mb-4 font-medium">¿Cuánto tiempo ha transcurrido desde la posible exposición de riesgo?</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <button onclick="nextAlgo(1, 'A')" class="p-3 text-sm border border-gray-300 rounded-lg hover:border-medical-500 hover:bg-medical-50 hover:text-medical-700 transition-colors font-medium bg-white text-left">&lt; 15 días (Fase Aguda)</button>
+                            <button onclick="nextAlgo(1, 'B')" class="p-3 text-sm border border-gray-300 rounded-lg hover:border-medical-500 hover:bg-medical-50 hover:text-medical-700 transition-colors font-medium bg-white text-left">15 - 30 días (Periodo Ventana)</button>
+                            <button onclick="nextAlgo(1, 'C')" class="p-3 text-sm border border-gray-300 rounded-lg hover:border-medical-500 hover:bg-medical-50 hover:text-medical-700 transition-colors font-medium bg-white text-left">&gt; 30 días (Fase Crónica)</button>
+                        </div>
+                    </div>
+
+                    <div id="algo-result" class="hidden mt-6 p-4 rounded-lg border-l-4">
+                        <h4 id="result-title" class="font-bold text-lg mb-1"></h4>
+                        <p id="result-desc" class="text-sm text-gray-600 mb-3"></p>
+                        <div class="bg-white p-3 rounded border text-sm text-gray-700 shadow-sm">
+                            <i class="fa-solid fa-circle-info text-blue-500 mr-1"></i> <span id="result-note"></span>
+                        </div>
+                        <button onclick="resetAlgo()" class="mt-4 text-sm font-semibold text-medical-600 hover:text-medical-800 underline">Reiniciar Algoritmo</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: Seguimiento Clínico y TAR -->
+            <div id="seguimiento" class="tab-content">
+                <div class="mb-8 border-b border-gray-100 pb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Seguimiento Clínico y TAR</h2>
+                    <p class="text-gray-500">Monitorización de eficacia de Terapia Antirretroviral (TAR), carga viral y reconstitución inmunológica.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <!-- CD4/CD8 Ratio Card -->
+                    <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="font-semibold text-gray-800">Proporción CD4/CD8</h3>
+                                <p class="text-xs text-gray-500">Marcador de senescencia e inmunosupresión</p>
+                            </div>
+                            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                                <i class="fa-solid fa-scale-balanced text-sm"></i>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-600">Normal (Sano)</span>
+                                <span class="font-semibold text-green-600">&gt; 1.0</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 80%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-600">Paciente VIH (Típico)</span>
+                                <span class="font-semibold text-red-500">&lt; 1.0 (Invertido)</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-red-500 h-2 rounded-full" style="width: 30%"></div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-4 leading-relaxed">
+                            En infección no tratada, la proporción se invierte por depleción de CD4+ y elevación persistente de CD8+. El TAR mejora la proporción, pero raramente la normaliza por completo (<em>Warren et al.</em>).
+                        </p>
+                    </div>
+
+                    <!-- Viral Load Card -->
+                    <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">Carga Viral (Viremia)</h3>
+                                    <p class="text-xs text-gray-500">Objetivo del TAR: Supresión duradera</p>
+                                </div>
+                                <div class="w-8 h-8 rounded-full bg-viral-100 flex items-center justify-center text-viral-600">
+                                    <i class="fa-solid fa-chart-area text-sm"></i>
+                                </div>
+                            </div>
+                            <div class="flex items-baseline gap-2 mb-2">
+                                <span class="text-3xl font-bold text-gray-900">&lt; 50</span>
+                                <span class="text-sm font-medium text-gray-500">copias/mL</span>
+                            </div>
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                <i class="fa-solid fa-check"></i> Indetectable = Intransmisible (I=I)
+                            </span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-4 leading-relaxed">
+                            Durante la fase aguda, la viremia puede superar 10^8 copias/mL. Con TAR exitoso, se logra viremia de bajo nivel (~1 copia/mL), limitando la progresión (<em>Fanales-Belasio et al.</em>).
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Simulation Widget -->
+                <div class="bg-slate-800 rounded-xl p-6 text-white shadow-lg">
+                    <h3 class="text-lg font-semibold mb-2">Simulador de Inicio Temprano de TAR</h3>
+                    <p class="text-sm text-slate-300 mb-6">El inicio temprano de TAR afecta la activación inmunológica y el reservorio celular.</p>
+                    
+                    <div class="flex flex-col sm:flex-row items-center gap-6">
+                        <div class="w-full sm:w-1/2">
+                            <label class="block text-xs uppercase tracking-wider text-slate-400 mb-2">Tiempo de Inicio TAR (Meses desde infección)</label>
+                            <input type="range" min="1" max="24" value="12" class="w-full h-2 bg-slate-600 rounded-lg appearance-none cursor-pointer" id="tar-slider" oninput="updateSimulation(this.value)">
+                            <div class="flex justify-between text-xs text-slate-400 mt-2">
+                                <span>Agudo (&lt;6m)</span>
+                                <span>Crónico (&gt;6m)</span>
+                            </div>
+                        </div>
+                        <div class="w-full sm:w-1/2 bg-slate-700 rounded-lg p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-sm text-slate-300">Activación CD8+ (CD38+ HLA-DR+)</span>
+                                <span id="sim-act" class="font-mono text-yellow-400 font-bold">Alta</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-slate-300">Tamaño del Reservorio Latente</span>
+                                <span id="sim-res" class="font-mono text-viral-400 font-bold">Extenso</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- SECTION 3: Mecanismos de Restricción -->
+            <div id="mecanismos" class="tab-content">
+                <div class="mb-8 border-b border-gray-100 pb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Mecanismos Virológicos y Restricción</h2>
+                    <p class="text-gray-500">Factores de restricción innata del huésped, senescencia celular y evasión viral.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    
+                    <!-- Card: SAMHD1 -->
+                    <div class="mech-card bg-white rounded-xl border border-gray-200 overflow-hidden flex flex-col h-full">
+                        <div class="bg-blue-600 h-2 w-full"></div>
+                        <div class="p-5 flex flex-col h-full">
+                            <div class="flex justify-between items-start mb-3">
+                                <h3 class="text-lg font-bold text-gray-900">SAMHD1</h3>
+                                <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded font-semibold">Pre-integración</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-4 flex-grow">
+                                Enzima (dNTPasa) que restringe el VIH-1 agotando el pool intracelular de dNTPs en macrófagos y células T CD4+ en reposo, impidiendo la transcripción inversa.
+                            </p>
+                            <div class="bg-slate-50 p-3 rounded border border-slate-100 text-xs">
+                                <span class="font-bold text-gray-700">Evasión Viral:</span> 
+                                El VIH-2 usa la proteína accesoria <strong>Vpx</strong> para degradar SAMHD1 vía proteasoma. (<em>Soliman et al.</em>)
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card: APOBEC3G -->
+                    <div class="mech-card bg-white rounded-xl border border-gray-200 overflow-hidden flex flex-col h-full">
+                        <div class="bg-purple-600 h-2 w-full"></div>
+                        <div class="p-5 flex flex-col h-full">
+                            <div class="flex justify-between items-start mb-3">
+                                <h3 class="text-lg font-bold text-gray-900">APOBEC3G</h3>
+                                <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded font-semibold">Pre-integración</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-4 flex-grow">
+                                Citidina deaminasa que induce hipermutación (C -> U en la cadena negativa, resultando en G -> A en el provirus), creando codones de parada prematuros.
+                            </p>
+                            <div class="bg-slate-50 p-3 rounded border border-slate-100 text-xs">
+                                <span class="font-bold text-gray-700">Evasión Viral:</span> 
+                                La proteína <strong>Vif</strong> del VIH-1 provoca la poliubiquitinación y degradación de APOBEC3G.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card: Senescencia CD8+ -->
+                    <div class="mech-card bg-white rounded-xl border border-gray-200 overflow-hidden flex flex-col h-full">
+                        <div class="bg-orange-500 h-2 w-full"></div>
+                        <div class="p-5 flex flex-col h-full">
+                            <div class="flex justify-between items-start mb-3">
+                                <h3 class="text-lg font-bold text-gray-900">Senescencia CD8+</h3>
+                                <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded font-semibold">Post-infección</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-4 flex-grow">
+                                Bajo TAR, las células T CD8+ muestran un fenotipo de envejecimiento acelerado: acortamiento de telómeros, pérdida de CD28 y aumento de CD57+.
+                            </p>
+                            <div class="bg-slate-50 p-3 rounded border border-slate-100 text-xs">
+                                <span class="font-bold text-gray-700">Impacto Clínico:</span> 
+                                Limita la capacidad proliferativa y la diversidad del TCR, obstaculizando las estrategias de cura y vacunas (<em>Warren et al.</em>).
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <script>
+        // Tab Navigation Logic
+        function switchTab(tabId) {
+            // Hide all contents
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            // Reset all buttons styles
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-medical-50', 'text-medical-700', 'border-medical-100');
+                el.classList.add('bg-white', 'text-gray-600', 'border-transparent');
+            });
+
+            // Show selected content
+            document.getElementById(tabId).classList.add('active');
+            
+            // Highlight selected button
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('bg-white', 'text-gray-600', 'border-transparent');
+            activeBtn.classList.add('bg-medical-50', 'text-medical-700', 'border-medical-100');
+        }
+
+        // Diagnostic Algorithm Logic
+        function nextAlgo(step, choice) {
+            const resultDiv = document.getElementById('algo-result');
+            const resultTitle = document.getElementById('result-title');
+            const resultDesc = document.getElementById('result-desc');
+            const resultNote = document.getElementById('result-note');
+
+            document.getElementById('algo-step-1').classList.add('hidden');
+            resultDiv.classList.remove('hidden');
+
+            if (choice === 'A') {
+                resultDiv.className = 'mt-6 p-4 rounded-lg border-l-4 border-viral-500 bg-viral-50';
+                resultTitle.textContent = 'Prueba Recomendada: Carga Viral (ARN VIH)';
+                resultDesc.textContent = 'En la fase aguda (<15 días), los anticuerpos aún no se han formado. Se requiere detectar el ARN viral directamente mediante PCR.';
+                resultNote.textContent = 'Viremia plasmática rápida: Incremento hasta >100 millones de copias/mL (Fiebig et al.). La p24 puede no ser detectable en los primeros días.';
+                resultTitle.className = 'font-bold text-lg mb-1 text-viral-800';
+            } else if (choice === 'B') {
+                resultDiv.className = 'mt-6 p-4 rounded-lg border-l-4 border-yellow-500 bg-yellow-50';
+                resultTitle.textContent = 'Prueba Recomendada: Ensayo de 4ta Generación (Ag/Ac)';
+                resultDesc.textContent = 'En el periodo de ventana, la combinación de antígeno p24 y anticuerpos contra el VIH permite una detección más temprana (promedio 22 días).';
+                resultNote.textContent = 'Si es reactiva, confirmar con ensayo suplementario de diferenciación de anticuerpos VIH-1/VIH-2.';
+                resultTitle.className = 'font-bold text-lg mb-1 text-yellow-800';
+            } else if (choice === 'C') {
+                resultDiv.className = 'mt-6 p-4 rounded-lg border-l-4 border-medical-500 bg-medical-50';
+                resultTitle.textContent = 'Prueba Recomendada: Ensayo Serológico (Ac)';
+                resultDesc.textContent = 'En la fase crónica asintomática, los anticuerpos IgG ya están completamente formados y son fácilmente detectables.';
+                resultNote.textContent = 'Se debe iniciar monitorización de linfocitos CD4+ para evitar el riesgo de infecciones oportunistas (Fase SIDA < 200 células/µL).';
+                resultTitle.className = 'font-bold text-lg mb-1 text-medical-800';
+            }
+        }
+
+        function resetAlgo() {
+            document.getElementById('algo-result').classList.add('hidden');
+            document.getElementById('algo-step-1').classList.remove('hidden');
+        }
+
+        // Simulation Slider Logic
+        function updateSimulation(val) {
+            const actLabel = document.getElementById('sim-act');
+            const resLabel = document.getElementById('sim-res');
+            
+            const months = parseInt(val);
+            
+            if (months <= 6) {
+                actLabel.textContent = "Moderada/Reducida";
+                actLabel.className = "font-mono text-green-400 font-bold";
+                resLabel.textContent = "Limitado";
+                resLabel.className = "font-mono text-green-400 font-bold";
+            } else if (months > 6 && months <= 12) {
+                actLabel.textContent = "Elevada";
+                actLabel.className = "font-mono text-yellow-400 font-bold";
+                resLabel.textContent = "Medio/Establecido";
+                resLabel.className = "font-mono text-yellow-400 font-bold";
+            } else {
+                actLabel.textContent = "Muy Alta (Crónica)";
+                actLabel.className = "font-mono text-viral-400 font-bold";
+                resLabel.textContent = "Extenso (Múltiples tejidos)";
+                resLabel.className = "font-mono text-viral-400 font-bold";
+            }
+        }
+
+        // Initialize state
+        updateSimulation(12);
+    </script>
+</body>
+</html>
